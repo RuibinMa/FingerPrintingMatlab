@@ -1,7 +1,7 @@
 clear all; close all; clc;
 %% choice
-database_path = '/playpen/matchingResults/';
-database_name = 'vocab1048576_50';
+database_path = '../matchingResults/';
+database_name = 'vocab262144_100';
 compareWithExhaustiveMatching = 1;
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be
@@ -41,10 +41,10 @@ end
 %% compare VocabTree Matching with Exhaustive matching
 if(compareWithExhaustiveMatching)
     exhaustivedb_name = 'exhaustivematching';
-    system(['sqlite3 -csv -header ',database_path, exhaustivedb_name, '.db "SELECT rows FROM inlier_matches" >! ./cache/exhaustiveresult.csv']);
+    system(['sqlite3 -csv -header ',database_path, exhaustivedb_name, '.db "SELECT rows FROM inlier_matches" > ./cache/exhaustiveresult.csv']);
     exhaustiveinlier_info = importdata(['./cache/exhaustiveresult.csv']);
     exhaustiveinlier = exhaustiveinlier_info.data;
-    system(['sqlite3 -csv -header ',database_path, exhaustivedb_name, '.db "SELECT pair_id FROM inlier_matches" >! ./cache/exhaustivepairid.csv']);
+    system(['sqlite3 -csv -header ',database_path, exhaustivedb_name, '.db "SELECT pair_id FROM inlier_matches" > ./cache/exhaustivepairid.csv']);
     exhaustivepairid_info = importdata(['./cache/exhaustivepairid.csv']);
     exhaustivepairid = exhaustivepairid_info.data;
     % exhaustive matching
