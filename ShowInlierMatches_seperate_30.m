@@ -1,13 +1,8 @@
 clear all; close all; clc;
 %% choice
-<<<<<<< HEAD
 database_path = '/playpen/matchingResults/';
 %database_path = '../matchingResults/';
-database_name = 'vocab262144_20_30';
-=======
-database_path = '../matchingResults/';
 database_name = 'vocab262144_100';
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
 compareWithExhaustiveMatching = 1;
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be
@@ -28,11 +23,8 @@ pairid = pairid_info.data;
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT image_id FROM images" > ./cache/images.csv']);
 images_info = importdata(['./cache/images.csv']);
 image_id = images_info.data;
-<<<<<<< HEAD
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT name FROM images" > ./cache/image_names.csv']);
 imagesname_info = importdata(['./cache/image_names.csv']);
-=======
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT rows FROM keypoints" > ./cache/keypoints.csv']);
 keypoints_info = importdata(['./cache/keypoints.csv']);
 keypoints = keypoints_info.data;
@@ -44,25 +36,17 @@ Matches = zeros(Num_Images);
 for i=1:length(pairid)
     id2 = mod(pairid(i), 2147483647);
     id1 = floor((pairid(i) - id2)/2147483647 + 0.5);
-    Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
-<<<<<<< HEAD
-    %Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
-end
-figure('Name', 'Matches');
-mesh(Matches);
-%% compare VocabTree Matching with Exhaustive matching
-if(compareWithExhaustiveMatching)
-    exhaustive_faraway_pairs = zeros(Num_Inlier, 3);
-    count = 0;
-    database_path = '/playpen/matchingResults/';
-=======
-    Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+    if(abs(id2 - id1) > 30)
+        Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+        Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+    end
 end
 %figure('Name', 'Dice Coefficients');
 %imshow(mat2gray(Matches));
 %% compare VocabTree Matching with Exhaustive matching
 if(compareWithExhaustiveMatching)
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
+    exhaustive_faraway_pairs = zeros(Num_Inlier, 3);
+    count = 0;
     exhaustivedb_name = 'exhaustivematching';
     system(['sqlite3 -csv -header ',database_path, exhaustivedb_name, '.db "SELECT rows FROM inlier_matches" > ./cache/exhaustiveresult.csv']);
     exhaustiveinlier_info = importdata(['./cache/exhaustiveresult.csv']);
@@ -75,23 +59,21 @@ if(compareWithExhaustiveMatching)
     for i=1:length(exhaustivepairid)
         id2 = mod(exhaustivepairid(i), 2147483647);
         id1 = floor((exhaustivepairid(i) - id2)/2147483647 + 0.5);
-        ExhaustiveMatches(id1, id2) = exhaustiveinlier(i);%/(keypoints(id1) + keypoints(id2));
-        ExhaustiveMatches(id2, id1) = exhaustiveinlier(i);%/(keypoints(id1) + keypoints(id2));
-<<<<<<< HEAD
+        if(abs(id2 - id1) > 30)
+            ExhaustiveMatches(id1, id2) = exhaustiveinlier(i);%/(keypoints(id1) + keypoints(id2));
+            ExhaustiveMatches(id2, id1) = exhaustiveinlier(i);%/(keypoints(id1) + keypoints(id2));
+        end
         if(abs(id2 - id1) > 30 && exhaustiveinlier(i) > 0.5)
             count = count + 1;
             exhaustive_faraway_pairs(count, :) = [id1, id2, exhaustiveinlier(i)];
         end
-=======
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
     end
     ax = (1:1:Num_Images);
     matchedImages = zeros(Num_Images, 1);
     exhaustiveImages = zeros(Num_Images, 1);
     for i=1:Num_Images
-<<<<<<< HEAD
-        matchedImages(i) =  length(find(Matches(i, :)>0.5));
-        exhaustiveImages(i) = length(find(ExhaustiveMatches(i, :)>0.5));
+        matchedImages(i) =  length(find(Matches(:, i)>0.5));
+        exhaustiveImages(i) = length(find(ExhaustiveMatches(:, i)>0.5));
     end
     
     correctMatches = zeros(Num_Images, 1);
@@ -103,28 +85,16 @@ if(compareWithExhaustiveMatching)
         end
     end
     retrivedRatio = sum(matchedImages) / sum(exhaustiveImages);
-    %fprintf('Average Retrived Ratio = %.2f%%\n', retrivedRatio*100);
-=======
-        matchedImages(i) =  length(find(Matches(:, i)>0.5));
-        exhaustiveImages(i) = length(find(ExhaustiveMatches(:, i)>0.5));
-    end
-    retrivedRatio = sum(matchedImages) / sum(exhaustiveImages);
     fprintf('Average Retrived Ratio = %.2f%%\n', retrivedRatio*100);
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
     h = figure;
     plot(ax, matchedImages, 'r');
     hold on;
     plot(ax, exhaustiveImages, 'b');
-<<<<<<< HEAD
     plot(ax, correctMatches, 'y');
     correctRatio = sum(correctMatches) / sum(matchedImages);
     hold off;
     %title(sprintf('Average Retrived Ratio = %.2f%%\n', retrivedRatio*100));
     title(sprintf('Average Correct Ratio = %.2f%%\n', correctRatio*100));
-=======
-    hold off;
-    title(sprintf('Average Retrived Ratio = %.2f%%\n', retrivedRatio*100));
->>>>>>> 109a7be81427394fb2f1febba4de139e5bca2fdb
     saveas(h, ['./output/', database_name, '.jpg'], 'jpg');
 end
 %% delete cache
