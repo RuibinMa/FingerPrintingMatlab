@@ -2,7 +2,7 @@ clear all; close all; clc;
 %% choice
 database_path = '/playpen/matchingResults/';
 %database_path = '../matchingResults/';
-database_name = 'vocab262144_20';
+database_name = 'vocab262144_60_30';
 %database_path = '../matchingResults/';
 %database_name = 'vocab262144_100';
 compareWithExhaustiveMatching = 1;
@@ -41,8 +41,8 @@ for i=1:length(pairid)
     Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
     %Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
 end
-figure('Name', 'Matches');
-mesh(Matches);
+%figure('Name', 'Matches');
+%mesh(Matches);
 %% compare VocabTree Matching with Exhaustive matching
 if(compareWithExhaustiveMatching)
     exhaustive_faraway_pairs = zeros(Num_Inlier, 3);
@@ -100,6 +100,7 @@ if(compareWithExhaustiveMatching)
     hold off;
     title(sprintf('Average Correct Ratio = %.2f%%\n', correctRatio*100));
     hold off;
+    saveas(h, ['./output/', database_name, '.jpg']);
 end
 %% delete cache
 delete('./cache/*');
