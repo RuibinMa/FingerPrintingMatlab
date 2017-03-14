@@ -1,11 +1,13 @@
 clear all; close all; clc;
 %% choice
-database_path = '/playpen/matchingResults/';
+%database_path = '/playpen/matchingResults/';
 %database_path = '../matchingResults/';
-database_name = 'vocab262144_60_30';
+%database_name = 'vocab262144_60_30';
 %database_path = '../matchingResults/';
 %database_name = 'vocab262144_100';
-compareWithExhaustiveMatching = 1;
+database_path = '/playpen/colonpicture/';
+database_name = 'database';
+compareWithExhaustiveMatching = 0;
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be
 % different across different systems. Some system uses ">" for overwrite.
@@ -27,6 +29,7 @@ images_info = importdata(['./cache/images.csv']);
 image_id = images_info.data;
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT name FROM images" > ./cache/image_names.csv']);
 imagesname_info = importdata(['./cache/image_names.csv']);
+imagesname = imagesname_info{2:end};
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT rows FROM keypoints" > ./cache/keypoints.csv']);
 keypoints_info = importdata(['./cache/keypoints.csv']);
 keypoints = keypoints_info.data;
@@ -34,14 +37,27 @@ keypoints = keypoints_info.data;
 Num_Images = length(image_id);
 Num_Inlier = length(inlier);
 % vocabulary tree matching
-Matches = zeros(Num_Images);
+if(Num_Images > 3000)
+    Matches = sparse(Num_Images, Num_Images);
+else
+    Matches = zeros(Num_Images);
+end
+NumOfMatchedImages = zeros(Num_Images, 1);
 for i=1:length(pairid)
     id2 = mod(pairid(i), 2147483647);
     id1 = floor((pairid(i) - id2)/2147483647 + 0.5);
     Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
-    %Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+    Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+    if(inlier(i) > 0.5)
+        NumOfMatchedImages(id1) = NumOfMatchedImages(id1) + 1;
+        NumOfMatchedImages(id2) = NumOfMatchedImages(id2) + 1;
+    end
 end
+ax = (1:1:Num_Images);
+figure;
+plot(ax, NumOfMatchedImages);
 %figure('Name', 'Matches');
+%mesh(Matches);
 %mesh(Matches);
 %% compare VocabTree Matching with Exhaustive matching
 if(compareWithExhaustiveMatching)
@@ -73,7 +89,7 @@ if(compareWithExhaustiveMatching)
             exhaustive_faraway_pairs(count, :) = [id1, id2, exhaustiveinlier(i)];
         end
     end
-    ax = (1:1:Num_Images);
+    
     matchedImages = zeros(Num_Images, 1);
     exhaustiveImages = zeros(Num_Images, 1);
     for i=1:Num_Images
