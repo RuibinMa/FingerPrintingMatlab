@@ -5,7 +5,7 @@ clear all; close all; clc;
 %database_name = 'vocab262144_60_30';
 %database_path = '../matchingResults/';
 %database_name = 'vocab262144_100';
-database_path = '/playpen/colonpicture/';
+database_path = '../colonpicture/';
 database_name = 'database';
 compareWithExhaustiveMatching = 0;
 %% use the following system command to fetch data from database file
@@ -29,7 +29,6 @@ images_info = importdata(['./cache/images.csv']);
 image_id = images_info.data;
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT name FROM images" > ./cache/image_names.csv']);
 imagesname_info = importdata(['./cache/image_names.csv']);
-imagesname = imagesname_info{2:end};
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT rows FROM keypoints" > ./cache/keypoints.csv']);
 keypoints_info = importdata(['./cache/keypoints.csv']);
 keypoints = keypoints_info.data;
