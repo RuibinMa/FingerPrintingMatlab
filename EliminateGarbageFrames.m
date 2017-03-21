@@ -15,5 +15,8 @@ open(outputVideo);
 for i = 1 : length(pos)
     img = imread([image_dir, 'images-undistorted/',imagesname_info{pos(i)+1}]);
     writeVideo(outputVideo, img);
+    if(~inverse)
+        imwrite(img, [image_dir, sprintf('images-good/frame%06d.jpg',i)]);
+    end
 end
 close(outputVideo);
