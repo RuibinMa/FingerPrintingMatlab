@@ -5,8 +5,10 @@ clear all; close all; clc;
 %database_name = 'vocab262144_60_30';
 %database_path = '../matchingResults/';
 %database_name = 'vocab262144_100';
-database_path = '../colonpicture/';
-database_name = 'database';
+%database_path = '../colonpicture/';
+%database_name = 'database';
+database_path = '/playpen/colonpicture/';
+database_name = 'database-o-40';
 compareWithExhaustiveMatching = 0;
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be

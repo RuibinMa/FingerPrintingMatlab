@@ -1,4 +1,5 @@
 close all; clc;
+%% mannually select the regions of interest
 imdir = '/playpen/colonpicture';
 %imdir = '../colonpicture';
 imlist = dir([imdir, '/images/*.jpg']);
@@ -19,8 +20,7 @@ incontour = roipoly;
 
 band = outcontour & ~incontour;
 imshow(band);
-
-%% test
+%% test (for some experiment)
 testimg = mat2gray(double(rgb2gray((imread([imdir, '/images/', imlist(5000).name])))));
 % roi = testimg(pos(2):pos(2)+pos(4)-1, pos(1):pos(1)+pos(3)-1, :);
 % BW = edge(roi, 'canny');
@@ -79,7 +79,6 @@ figure;
 ax = (1:1:n);
 plot(ax, score);
 save('score.mat', 'score');
-
 %% use the high scores as seed, to find their neighboring artifacts
 scorepos = find(score > 70);
 insidepos = find(incontour > 0);
@@ -117,7 +116,7 @@ figure;
 plot(ax, label);
 frames_without_artifact = find(label == 0);
 save('label.mat', 'label');
-%%
+%% SSD of the intensities between neighboring frames (abandoned)
 % ssd = zeros(n, 1);
 % incontourpos = find(incontour > 0);
 % Iprev = mat2gray(double(rgb2gray((imread([imdir, '/images/', imlist(1).name])))));
@@ -139,7 +138,7 @@ save('label.mat', 'label');
 % figure;
 % plot(ax, ssd);
 
-%% quantile function
+%% SSD of the quantile functions of roi from neighboring frames (abandoned)
 % figure;
 % imshow(roi);
 % contour = roipoly;
@@ -163,7 +162,7 @@ save('label.mat', 'label');
 % figure;
 % plot(ax, qfssd);
 
-%% select the images    
+%% select the images (this is to check whether all frames with artifact are excluded, no longer in use)
 delete([imdir, '/images-artifact-removed/*']);
 % parfor i=1:length(frames_without_artifact)
 %     img = imread([imdir, '/images/', imlist(frames_without_artifact(i)).name]);
