@@ -8,7 +8,7 @@ clear all; close all; clc;
 %database_path = '../colonpicture/';
 %database_name = 'database';
 database_path = '/playpen/colonpicture/';
-database_name = 'database-o-40';
+database_name = 'database-o-30';
 compareWithExhaustiveMatching = 0;
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be
