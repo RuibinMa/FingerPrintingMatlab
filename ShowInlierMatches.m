@@ -5,9 +5,9 @@ clear all; close all; clc;
 %database_name = 'vocab262144_60_30';
 %database_path = '../matchingResults/';
 %database_name = 'vocab262144_100';
-%database_path = '../colonpicture/';
-%database_name = 'database';
-database_path = '/playpen/colonpicture/';
+database_path = '../colonpicture/';
+%database_name = 'database-o-fov30';
+%database_path = '/playpen/colonpicture/';
 database_name = 'database-o-30';
 compareWithExhaustiveMatching = 0;
 %% use the following system command to fetch data from database file
@@ -47,9 +47,9 @@ NumOfMatchedImages = zeros(Num_Images, 1);
 for i=1:length(pairid)
     id2 = mod(pairid(i), 2147483647);
     id1 = floor((pairid(i) - id2)/2147483647 + 0.5);
-    Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
-    Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
     if(inlier(i) > 0.5)
+        Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+        Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
         NumOfMatchedImages(id1) = NumOfMatchedImages(id1) + 1;
         NumOfMatchedImages(id2) = NumOfMatchedImages(id2) + 1;
     end

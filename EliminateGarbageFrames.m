@@ -1,15 +1,17 @@
 %% must run ShowInlierMatches before this script
-inverse = 0;
+inverse = 1;
 threshold = 1;
 num_min_inliers = 30;
-%image_dir = '../colonpicture/';
-image_dir = '/playpen/colonpicture/';
+image_dir = '../colonpicture/';
+%image_dir = '/playpen/colonpicture/';
+
+NOF = medfilt1(NumOfMatchedImages, 11);
 
 if inverse
-    pos = find(NumOfMatchedImages <= threshold);
+    pos = find(NOF <= threshold);
     outputVideo = VideoWriter([image_dir, 'videos/badframes_',num2str(num_min_inliers),'_',num2str(threshold),'.avi']);
 else
-    pos = find(NumOfMatchedImages > threshold);
+    pos = find(NOF > threshold);
     outputVideo = VideoWriter([image_dir, 'videos/goodframes_',num2str(num_min_inliers),'_',num2str(threshold),'.avi']);
 end
 outputVideo.FrameRate = 30;
