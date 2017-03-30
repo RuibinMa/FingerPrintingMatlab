@@ -21,7 +21,7 @@ if(~inverse)
     delete([image_dir, 'images-good/*']);
 end
 for i = 1 : length(pos)
-    img = imread([image_dir, 'images-undistorted/',imagesname_info{pos(i)+1}]);
+    img = imread([image_dir, 'images-undistorted/',imagesname_info{pos(i)}]);
     writeVideo(outputVideo, img);
     if(~inverse)
         imwrite(img, [image_dir, sprintf('images-good/frame%06d.jpg',pos(i))]);

@@ -8,8 +8,13 @@ clear all; close all; clc;
 database_path = '../colonpicture/';
 %database_name = 'database-o-fov30';
 %database_path = '/playpen/colonpicture/';
-database_name = 'database-o-30';
+%database_name = 'database-o-30-1-standard';
+database_name = 'database-m-30-1-standard';
 compareWithExhaustiveMatching = 0;
+extractFarAwayPairs = 0;
+if(~isempty(strfind(database_name, '-m-')))
+    extractFarAwayPairs = 1;
+end
 %% use the following system command to fetch data from database file
 % the system command ">!", which means overwrite redirection, can be
 % different across different systems. Some system uses ">" for overwrite.
@@ -31,6 +36,7 @@ images_info = importdata(['./cache/images.csv']);
 image_id = images_info.data;
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT name FROM images" > ./cache/image_names.csv']);
 imagesname_info = importdata(['./cache/image_names.csv']);
+imagesname_info = imagesname_info(2:end);
 system(['sqlite3 -csv -header ',database_path, database_name, '.db "SELECT rows FROM keypoints" > ./cache/keypoints.csv']);
 keypoints_info = importdata(['./cache/keypoints.csv']);
 keypoints = keypoints_info.data;
@@ -44,15 +50,30 @@ else
     Matches = zeros(Num_Images);
 end
 NumOfMatchedImages = zeros(Num_Images, 1);
+
+if(extractFarAwayPairs)
+    FarAwayPairs = zeros(nnz(inlier), 4);
+    farid = 1;
+end
 for i=1:length(pairid)
     id2 = mod(pairid(i), 2147483647);
     id1 = floor((pairid(i) - id2)/2147483647 + 0.5);
     if(inlier(i) > 0.5)
         Matches(id1, id2) = inlier(i);%/(keypoints(id1) + keypoints(id2));
-        Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
         NumOfMatchedImages(id1) = NumOfMatchedImages(id1) + 1;
-        NumOfMatchedImages(id2) = NumOfMatchedImages(id2) + 1;
+        if(~extractFarAwayPairs)
+            Matches(id2, id1) = inlier(i);%/(keypoints(id1) + keypoints(id2));
+            NumOfMatchedImages(id2) = NumOfMatchedImages(id2) + 1;
+        else
+            if(Matches(id2, id1) <= 0.5) % this pair isn't recorded
+                FarAwayPairs(farid, :) = [id1, id2, inlier(i), 0];
+                farid = farid + 1; 
+            end
+        end
     end
+end
+if(extractFarAwayPairs)
+    FarAwayPairs = FarAwayPairs(1:farid-1, :);
 end
 ax = (1:1:Num_Images);
 figure;
