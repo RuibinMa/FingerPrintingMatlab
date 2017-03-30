@@ -1,6 +1,6 @@
 %% prepare dataset for judgement
-database_path = '../colonpicture/models/';
-%database_path = '/playpen/colonpicture/models/';
+%database_path = '../colonpicture/models/';
+database_path = '/playpen/colonpicture/models/';
 models = dir(database_path);
 models = models(3:end);
 listOfFrames = [];
