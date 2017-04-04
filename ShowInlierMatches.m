@@ -10,6 +10,7 @@ clear all; close all; clc;
 database_path = '/playpen/colonpicture/';
 %database_name = 'database-o-30-1-standard';
 database_name = 'database-m-30-1-standard';
+%database_name = 'database-o-30-1-m-15.db';
 compareWithExhaustiveMatching = 0;
 extractFarAwayPairs = 0;
 if(~isempty(strfind(database_name, '-m-')))

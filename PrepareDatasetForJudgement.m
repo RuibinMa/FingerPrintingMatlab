@@ -68,12 +68,17 @@ for i=1:Num_Images
     end
 end
 
+load('IncorrectPairs.mat');
 
-
+SelectedFarAwayPairs1 = [SelectedFarAwayPairs1, ones(size(SelectedFarAwayPairs1, 1), 1)];
+SelectedFarAwayPairs2 = [SelectedFarAwayPairs2, ones(size(SelectedFarAwayPairs2, 1), 1)*2];
+IncorrectPairs = [IncorrectPairs, ones(size(IncorrectPairs, 1), 1)*3];
 x1 = randsample(length(SelectedFarAwayPairs1), 100);
 x1 = sort(x1);
 x2 = randsample(length(SelectedFarAwayPairs2), 100);
 x2 = sort(x2);
-SelectedFarAwayPairs = [SelectedFarAwayPairs1(x1, :); SelectedFarAwayPairs2(x2, :)];
-
+x3 = randsample(length(IncorrectPairs), 50);
+x3 = sort(x3);
+SelectedFarAwayPairs = [SelectedFarAwayPairs1(x1, :); SelectedFarAwayPairs2(x2, :); IncorrectPairs(x3, :)];
+SelectedFarAwayPairs = SelectedFarAwayPairs(randperm(length(SelectedFarAwayPairs)), :);
 save('SelectedFarAwayPairs.mat', 'SelectedFarAwayPairs');

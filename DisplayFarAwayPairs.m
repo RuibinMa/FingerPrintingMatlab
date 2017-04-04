@@ -1,12 +1,13 @@
 close all; clear all; clc;
 %% display the far away pairs
-progress = 1; % record the progress here
+load('progress.mat');
+fprintf('\n Start: current progress = %d\n\n', progress);
 load('SelectedFarAwayPairs.mat');
 SelectedFarAwayPairs(progress:end, 4) = SelectedFarAwayPairs(progress:end, 4)*0;
 
-%path_to_images = '/playpen/colonpicture/images-good/';
+path_to_images = '/playpen/colonpicture/images-good-standard/';
 %path_to_images = './images-good-standard/';
-path_to_images = '../colonpicture/images-good-standard/';
+%path_to_images = '../colonpicture/images-good-standard/';
 imagenames = dir([path_to_images, '*.jpg']);
 
 figure;
@@ -31,9 +32,10 @@ while(i >=1 && i <= size(SelectedFarAwayPairs, 1))
     end
     if(reply == 'q')
         fprintf('\n Terminated By User: current progress = %d\n', i);
-        fprintf(' Please record the progress in the 3rd line\n\n');
         
         save('SelectedFarAwayPairs.mat', 'SelectedFarAwayPairs');
+        progress = i;
+        save('progress.mat', 'progress');
         break;
     end
     if ~isempty(str2num(reply))
@@ -46,5 +48,5 @@ while(i >=1 && i <= size(SelectedFarAwayPairs, 1))
 end
 
 if(i > 1)
-    fprintf(' \n%d/%d pairs has already been checked, well-matched ratio = %.4f\n\n', i-1, length(SelectedFarAwayPairs), sum(SelectedFarAwayPairs(1:i-1, 4))/(i-1));
+    fprintf('\n %d/%d pairs has already been checked, well-matched ratio = %.4f\n\n', i-1, length(SelectedFarAwayPairs), sum(SelectedFarAwayPairs(1:i-1, 4))/(i-1));
 end
